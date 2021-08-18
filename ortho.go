@@ -78,16 +78,22 @@ func (m Model) Generate(maxDistance uint64) (
 	for i := range m.cuts {
 		plane := m.cuts[i].plane
 		offset := m.cuts[i].offset
+		var app []Plate
 	again:
-		for i, p := range m.plates {
-			ps, cuts := p.cut(offset, plane)
+		var cuted bool
+		for i := 0; i < len(m.plates); i++ {
+			ps, cuts := m.plates[i].cut(offset, plane)
 			if !cuts {
 				continue
 			}
-			m.plates = append(m.plates, ps[0], ps[1])
+			app = append(app, ps[0], ps[1])
 			m.plates = append(m.plates[:i], m.plates[i+1:]...)
+			cuted = true
+		}
+		if cuted {
 			goto again
 		}
+		m.plates = append(m.plates, app...)
 	}
 
 	var add func(v1, v2 uint64, plane Planes)
