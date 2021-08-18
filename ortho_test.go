@@ -101,7 +101,6 @@ func Example() {
 		m.Add(100, "horizontal", 600, true)
 		m.Add(100, "vertical", 1000, false)
 		view(m.Generate(0))
-		debug(m.Generate(100))
 		fmt.Fprintf(os.Stdout, "\n")
 	}
 
