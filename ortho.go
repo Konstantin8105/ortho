@@ -299,3 +299,12 @@ func (p Planes) String() string {
 	}
 	panic("undefine plane")
 }
+
+// return point indexes
+func Select(points [][3]uint64) (
+	mainPlate []int,
+	left, right, top, bottom []int,
+) {
+
+	return
+}
