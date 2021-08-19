@@ -383,11 +383,12 @@ func Select(points [][3]uint64) (types []PointType) {
 		if y == b {
 			types[i] = Bottom
 		}
+
 		if x == l && y == b {
 			types[i] = LeftBottom
 		}
-		if x == r && y == b {
-			types[i] = RightBottom
+		if x == r && y == t {
+			types[i] = RightTop
 		}
 		if x == l && y == t {
 			types[i] = LeftTop

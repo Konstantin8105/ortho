@@ -227,8 +227,7 @@ func ExampleSelect() {
 	//   8  1800   600   100 Other
 	//   9  1800   600     0 Right
 	//  10     0  1200     0 LeftTop
-	//  11  1800  1200     0 Top
+	//  11  1800  1200     0 RightTop
 	//  12     0     0     0 LeftBottom
 	//  13  1800     0     0 RightBottom
-
 }
