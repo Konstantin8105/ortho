@@ -300,44 +300,100 @@ func (p Planes) String() string {
 	panic("undefine plane")
 }
 
+type PointType uint8
+
+const (
+	Other PointType = iota
+	MainPlate
+	Left
+	Right
+	Top
+	Bottom
+	LeftTop
+	LeftBottom
+	RightTop
+	RightBottom
+)
+
+func (t PointType) String() string {
+	switch t {
+	case Other:
+		return "Other"
+	case MainPlate:
+		return "MainPlate"
+	case Left:
+		return "Left"
+	case Right:
+		return "Right"
+	case Top:
+		return "Top"
+	case Bottom:
+		return "Bottom"
+	case LeftTop:
+		return "LeftTop"
+	case LeftBottom:
+		return "LeftBottom"
+	case RightTop:
+		return "RightTop"
+	case RightBottom:
+		return "RightBottom"
+	}
+	panic("undefined")
+}
+
 // return point indexes
-func Select(points [][3]uint64) (
-	mainPlate []int,
-	left, right, top, bottom []int,
-) {
+func Select(points [][3]uint64) (types []PointType) {
+	// dimensions
+	var l, r, t, b uint64
+	for i := range points {
+		x, y := points[i][0], points[i][1]
+		if x < l {
+			l = x
+		}
+		if r < x {
+			r = x
+		}
+		if t < y {
+			t = y
+		}
+		if y < b {
+			b = y
+		}
+	}
+
+	// classification
+	types = make([]PointType, len(points))
 	for i := range points {
 		if points[i][2] != 0 {
 			continue
 		}
-		mainPlate = append(mainPlate, i)
-	}
-	var l, r, t, b uint64
-	for _, ind := range mainPlate {
-		if v := points[ind][0]; v < l {
-			l = v
+		types[i] = MainPlate
+
+		x, y := points[i][0], points[i][1]
+
+		if x == l {
+			types[i] = Left
 		}
-		if v := points[ind][0]; r < v {
-			r = v
+		if x == r {
+			types[i] = Right
 		}
-		if v := points[ind][1]; v < t {
-			t = v
+		if y == t {
+			types[i] = Top
 		}
-		if v := points[ind][1]; b < v {
-			b = v
+		if y == b {
+			types[i] = Bottom
 		}
-	}
-	for _,ind := range mainPlate{
-		if points[ind][0] == l {
-			left = append(left, ind)
+		if x == l && y == b {
+			types[i] = LeftBottom
 		}
-		if points[ind][0] == r {
-			right = append(right, ind)
+		if x == r && y == b {
+			types[i] = RightBottom
 		}
-		if points[ind][1] == t {
-			top = append(top, ind)
+		if x == l && y == t {
+			types[i] = LeftTop
 		}
-		if points[ind][1] == b {
-			bottom = append(bottom, ind)
+		if x == r && y == b {
+			types[i] = RightBottom
 		}
 	}
 	return

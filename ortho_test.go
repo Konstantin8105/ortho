@@ -165,6 +165,7 @@ func Example() {
 	//   7  1800     0     0
 	// Rectangles
 	//  ID  P1  P2  P3  P4     Material
+
 	//   0   0   1   2   3        stiff
 	//   1   4   5   1   0         base
 	//   2   0   1   6   7         base
@@ -196,4 +197,38 @@ func Example() {
 	//   5   1   4  11   9         base
 	//   6  12   6   1   0         base
 	//   7   0   1   9  13         base
+}
+
+func ExampleSelect() {
+	var m Model
+	m.Init(1800, 1200, "base")
+	m.Add(100, "horizontal", 600, true)
+	m.Add(100, "vertical", 1000, false)
+	ps, _ := m.Generate(0)
+	ts := Select(ps)
+	fmt.Fprintf(os.Stdout, "%3s %5s %5s %5s\n",
+		"ID", "X", "Y", "Z")
+	for i := range ps {
+		fmt.Fprintf(os.Stdout, "%3d %5d %5d %5d %s\n", i,
+			ps[i][0], ps[i][1], ps[i][2],
+			ts[i],
+		)
+	}
+	// Output:
+	// ID     X     Y     Z
+	//   0  1000     0     0 Bottom
+	//   1  1000   600     0 MainPlate
+	//   2  1000   600   100 Other
+	//   3  1000     0   100 Other
+	//   4  1000  1200     0 Top
+	//   5  1000  1200   100 Other
+	//   6     0   600     0 Left
+	//   7     0   600   100 Other
+	//   8  1800   600   100 Other
+	//   9  1800   600     0 Right
+	//  10     0  1200     0 LeftTop
+	//  11  1800  1200     0 Top
+	//  12     0     0     0 LeftBottom
+	//  13  1800     0     0 RightBottom
+
 }
