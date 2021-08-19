@@ -305,6 +305,40 @@ func Select(points [][3]uint64) (
 	mainPlate []int,
 	left, right, top, bottom []int,
 ) {
-
+	for i := range points {
+		if points[i][2] != 0 {
+			continue
+		}
+		mainPlate = append(mainPlate, i)
+	}
+	var l, r, t, b uint64
+	for _, ind := range mainPlate {
+		if v := points[ind][0]; v < l {
+			l = v
+		}
+		if v := points[ind][0]; r < v {
+			r = v
+		}
+		if v := points[ind][1]; v < t {
+			t = v
+		}
+		if v := points[ind][1]; b < v {
+			b = v
+		}
+	}
+	for _,ind := range mainPlate{
+		if points[ind][0] == l {
+			left = append(left, ind)
+		}
+		if points[ind][0] == r {
+			right = append(right, ind)
+		}
+		if points[ind][1] == t {
+			top = append(top, ind)
+		}
+		if points[ind][1] == b {
+			bottom = append(bottom, ind)
+		}
+	}
 	return
 }
