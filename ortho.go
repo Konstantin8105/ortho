@@ -1,5 +1,9 @@
 package ortho
 
+import (
+	"sort"
+)
+
 type Model struct {
 	width, heigth uint64 // mm
 	plates        []Plate
@@ -65,6 +69,64 @@ func (m *Model) Add(stiffH uint64, material string, offset uint64, parallelX boo
 	}
 	m.cuts = append(m.cuts, cut{plane: XOY, offset: 0})
 	m.cuts = append(m.cuts, cut{plane: XOY, offset: stiffH})
+}
+
+// ParalleX = false:
+//	Y
+//	|    --- +-----------------------+
+//	|     |  |                       |
+//	|     W  |                       |
+//	|     |  |                       |
+//	|    --- +-----------------------+
+//	|     |
+//	|     |
+//	|     Offset
+//	|     |
+//	|     |
+//	*--------------------------------> X
+//
+//
+// ParalleX = true:
+//	               +-------+
+//	               |       |
+//	Y              |       |
+//	|              |       |
+//	|              |       |
+//	               |       |
+//	*              +-------+  --> X
+//	|<-- Offset -->|<- W ->|
+//
+func (m *Model) AddPlateOnZ(W, Z uint64, material string, offset uint64, parallelX bool) {
+	if parallelX {
+		if m.width < offset+W {
+			panic("not valid offset")
+		}
+		m.plates = append(m.plates, Plate{
+			Width:    m.width,
+			Heigth:   W,
+			Coord:    [2]uint64{0, offset},
+			Plane:    XOY,
+			Offset:   Z,
+			Material: material,
+		})
+		m.cuts = append(m.cuts, cut{plane: ZOX, offset: offset})
+		m.cuts = append(m.cuts, cut{plane: ZOX, offset: offset + W})
+	} else {
+		if m.width < offset+W {
+			panic("not valid offset")
+		}
+		m.plates = append(m.plates, Plate{
+			Width:    W,
+			Heigth:   m.heigth,
+			Coord:    [2]uint64{offset, 0},
+			Plane:    XOY,
+			Offset:   Z,
+			Material: material,
+		})
+		m.cuts = append(m.cuts, cut{plane: YOZ, offset: offset})
+		m.cuts = append(m.cuts, cut{plane: YOZ, offset: offset + W})
+	}
+	m.cuts = append(m.cuts, cut{plane: XOY, offset: Z})
 }
 
 func (m Model) Generate(maxDistance uint64) (
@@ -180,6 +242,35 @@ func (m Model) Generate(maxDistance uint64) (
 
 		r.Material = p.Material
 		rectangles = append(rectangles, r)
+	}
+
+	{
+		var xoyListOnZ []int
+		for i := range rectangles {
+			if points[rectangles[i].PointsId[0]][2] == 0 &&
+				points[rectangles[i].PointsId[0]][2] ==
+					points[rectangles[i].PointsId[2]][2] {
+				continue
+			}
+			xoyListOnZ = append(xoyListOnZ, i)
+		}
+		removeList := []int{}
+		for i := range xoyListOnZ {
+			for j := range xoyListOnZ {
+				if i <= j {
+					continue
+				}
+				if rectangles[xoyListOnZ[i]].PointsId[0] ==
+					rectangles[xoyListOnZ[j]].PointsId[0] {
+					removeList = append(removeList, xoyListOnZ[i])
+				}
+			}
+		}
+		sort.Ints(removeList)
+		for i := range removeList {
+			ind := removeList[len(removeList)-i-1]
+			rectangles = append(rectangles[:ind], rectangles[ind+1:]...)
+		}
 	}
 
 	return
