@@ -318,15 +318,16 @@ func ExampleAddPlateOnZ() {
 	//  21  27  22   4   1         base
 	//  22  29  31  32  30         base
 	//  23  30  32  14  12         base
-	//  24  33  11  34  35   horizontal
-	//  25  11  18  36  34     horPlate
-	//  26   0   1  37  38         base
-	//  27  38  37  39  40         base
-	//  28   4  12  41  33         base
-	//  29  33  41  42  35         base
-	//  30   9  11  34  43     horPlate
-	//  31   1   4  33  37         base
-	//  32  37  33  35  39         base
-	//  33  12  14  44  41         base
-	//  34  41  44  45  42         base
+	//  24   4   5  11  33   horizontal
+	//  25  33  11  34  35   horizontal
+	//  26  11  18  36  34     horPlate
+	//  27   0   1  37  38         base
+	//  28  38  37  39  40         base
+	//  29   4  12  41  33         base
+	//  30  33  41  42  35         base
+	//  31   9  11  34  43     horPlate
+	//  32   1   4  33  37         base
+	//  33  37  33  35  39         base
+	//  34  12  14  44  41         base
+	//  35  41  44  45  42         base
 }

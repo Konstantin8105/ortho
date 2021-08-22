@@ -261,7 +261,9 @@ func (m Model) Generate(maxDistance uint64) (
 					continue
 				}
 				if rectangles[xoyListOnZ[i]].PointsId[0] ==
-					rectangles[xoyListOnZ[j]].PointsId[0] {
+					rectangles[xoyListOnZ[j]].PointsId[0] &&
+					rectangles[xoyListOnZ[i]].PointsId[2] ==
+						rectangles[xoyListOnZ[j]].PointsId[2] {
 					removeList = append(removeList, xoyListOnZ[i])
 				}
 			}
