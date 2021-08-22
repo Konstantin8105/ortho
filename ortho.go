@@ -260,17 +260,34 @@ func (m Model) Generate(maxDistance uint64) (
 				if i <= j {
 					continue
 				}
-				if rectangles[xoyListOnZ[i]].PointsId[0] ==
-					rectangles[xoyListOnZ[j]].PointsId[0] &&
-					rectangles[xoyListOnZ[i]].PointsId[2] ==
-						rectangles[xoyListOnZ[j]].PointsId[2] {
-					removeList = append(removeList, xoyListOnZ[i])
+				same := true
+				for p := 0; p < 4; p++ {
+					if rectangles[xoyListOnZ[i]].PointsId[p] !=
+						rectangles[xoyListOnZ[j]].PointsId[p] {
+						same = false
+						break
+					}
 				}
+				if !same {
+					continue
+				}
+				removeList = append(removeList, xoyListOnZ[i])
 			}
 		}
 		sort.Ints(removeList)
+		for i := 1; i < len(removeList); i++ {
+			if removeList[i-1] == removeList[i] {
+				removeList = append(removeList[:i], removeList[i+1:]...)
+				i = 0
+			}
+		}
+		// reverse
+		for i := 0; i < len(removeList)/2; i++ {
+			j := len(removeList) - i - 1
+			removeList[i], removeList[j] = removeList[j], removeList[i]
+		}
 		for i := range removeList {
-			ind := removeList[len(removeList)-i-1]
+			ind := removeList[i]
 			rectangles = append(rectangles[:ind], rectangles[ind+1:]...)
 		}
 	}
