@@ -72,6 +72,7 @@ func (m *Model) Add(stiffH uint64, material string, offset uint64, parallelX boo
 }
 
 // ParalleX = false:
+//
 //	Y
 //	|    --- +-----------------------+
 //	|     |  |                       |
@@ -85,8 +86,8 @@ func (m *Model) Add(stiffH uint64, material string, offset uint64, parallelX boo
 //	|     |
 //	*--------------------------------> X
 //
-//
 // ParalleX = true:
+//
 //	               +-------+
 //	               |       |
 //	Y              |       |
@@ -95,7 +96,6 @@ func (m *Model) Add(stiffH uint64, material string, offset uint64, parallelX boo
 //	               |       |
 //	*              +-------+  --> X
 //	|<-- Offset -->|<- W ->|
-//
 func (m *Model) AddPlateOnZ(W, Z uint64, material string, offset uint64, parallelX bool) {
 	if parallelX {
 		if m.width < offset+W {
